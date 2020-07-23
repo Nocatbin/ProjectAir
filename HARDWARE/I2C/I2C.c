@@ -35,7 +35,10 @@ void I2C_congfig(void)
 }
 
 
-//写入一个字节
+//写一个字节
+//Param
+//address 8bit内存地址 设备地址在H文件中设置
+//data 
 void I2C_WriteByte(u8 address, u8 data)
 {
 	u8 i = 0;
@@ -84,8 +87,14 @@ void I2C_WriteByte(u8 address, u8 data)
 }
 
 
+
 //读取ByteNum个字节的数据
-void I2C_ReadData(u8 addressMSB, u8 addressLSB, u8 *data, u8 ByteNum)
+//Param
+//addressMSB 地址高八位
+//addressLSB 地址低八位
+//*data 读取出的数据首地址 可为数组
+//ByteNum
+void I2C_ReadData_16bitAddress(u8 addressMSB, u8 addressLSB, u8 *data, u8 ByteNum)
 {
 	u8 i = 0, j = 0;
 	//生成Start信号

@@ -13,5 +13,6 @@ uint32_t sensirion_bytes_to_uint32_t(const uint8_t* bytes);
 float sensirion_bytes_to_float(const uint8_t* bytes);
 int8_t sensirion_common_check_crc(const uint8_t* data, uint16_t count,uint8_t checksum);
 uint8_t sensirion_common_generate_crc(const uint8_t* data, uint16_t count);
-
+void SCD30_ReadMeasurement(u8 *data);
+void SCD30_TriggerContinuousMeasurement(void);
 #endif
