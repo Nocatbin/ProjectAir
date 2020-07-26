@@ -194,7 +194,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 			break;
 		}
 	}
-	delay_ms(5);
+	delay_ms(1);
 	I2C_SendData(I2C_Num, 0x10);
 	//检测EV8事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTING) == ERROR)
@@ -207,6 +207,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		}
 	}
 	
+	delay_ms(1);
 	//以下发送16bit Pressure
 	I2C_SendData(I2C_Num, 0x00);
 	//检测EV8事件
@@ -219,6 +220,8 @@ void SCD30_TriggerContinuousMeasurement(void)
 			break;
 		}
 	}
+	
+	delay_ms(1);
 	I2C_SendData(I2C_Num, 0x00);
 	//检测EV8事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTING) == ERROR)
@@ -230,14 +233,14 @@ void SCD30_TriggerContinuousMeasurement(void)
 			break;
 		}
 	}
-	
+	delay_ms(1);
 	//发送CRC
 	I2C_SendData(I2C_Num, 0x81);
 	//检测EV8_2事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR)
 	{
 		i++;	
-		if(i>=100)
+		if(i>=1000)
 		{
 			printf("error\n");
 			break;
