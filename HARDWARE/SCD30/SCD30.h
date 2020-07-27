@@ -9,10 +9,13 @@
 #define STATUS_FAIL (-1)
 #define NO_ERROR 0
 
-uint32_t sensirion_bytes_to_uint32_t(const uint8_t* bytes);
-float sensirion_bytes_to_float(const uint8_t* bytes);
-int8_t sensirion_common_check_crc(const uint8_t* data, uint16_t count,uint8_t checksum);
-uint8_t sensirion_common_generate_crc(const uint8_t* data, uint16_t count);
+float bytes_to_float(u8 MMSB, u8 MLSB, u8 LMSB, u8 LLSB);
+u32 bytes_to_uint32_t(u8 MMSB, u8 MLSB, u8 LMSB, u8 LLSB);
 void SCD30_ReadMeasurement(u8 *data);
 void SCD30_TriggerContinuousMeasurement(void);
+u8 SCD30_CheckDataReady(void);
+
+uint8_t sensirion_common_generate_crc(const uint8_t* data, uint16_t count);
+int8_t sensirion_common_check_crc(const uint8_t* data, uint16_t count,uint8_t checksum);
+	
 #endif

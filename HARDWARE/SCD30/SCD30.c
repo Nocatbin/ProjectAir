@@ -32,7 +32,7 @@ int8_t sensirion_common_check_crc(const uint8_t* data, uint16_t count,uint8_t ch
     return NO_ERROR;
 }
 
-float sensirion_bytes_to_float(const uint8_t* bytes)
+float bytes_to_float(u8 MMSB, u8 MLSB, u8 LMSB, u8 LLSB)
 {
     union
 		{
@@ -40,14 +40,15 @@ float sensirion_bytes_to_float(const uint8_t* bytes)
         float float32;
     } tmp;
 
-    tmp.u32_value = sensirion_bytes_to_uint32_t(bytes);
+    tmp.u32_value = bytes_to_uint32_t(MMSB, MLSB, LMSB, LLSB);
     return tmp.float32;
 }
 
-uint32_t sensirion_bytes_to_uint32_t(const uint8_t* bytes)
+u32 bytes_to_uint32_t(u8 MMSB, u8 MLSB, u8 LMSB, u8 LLSB)
 {
-    return (uint32_t)bytes[0] << 24 | (uint32_t)bytes[1] << 16 |
-           (uint32_t)bytes[2] << 8 | (uint32_t)bytes[3];
+	
+	return (u32)MMSB << 24 | (u32)MLSB << 16 |
+           (u32)LMSB << 8 | (u32)LLSB;
 }
 
 
@@ -57,27 +58,35 @@ uint32_t sensirion_bytes_to_uint32_t(const uint8_t* bytes)
 //*data 读取出的数据首地址 可为数组
 void SCD30_ReadMeasurement(u8 *data)
 {
-	u8 i = 0, j = 0;
+	u32 i = 0, j = 0;
 	//生成Start信号
 	I2C_GenerateSTART(I2C_Num, ENABLE);
 	//检测EV5事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_MODE_SELECT) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=10000)
+		{
+			printf("error8\n");
 			break;
+		}
 	}
 	
+	i = 0;
 	//发送设备地址 写模式
 	I2C_Send7bitAddress(I2C_Num, TargetAddress, I2C_Direction_Transmitter);
 	//检测EV6事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=1000)
+		{
+			printf("error9\n");
 			break;
+		}
 	}
 	
+	i = 0;
 	//发送数据,即读数据的内存地址MSB 0x03
 	I2C_SendData(I2C_Num, 0x03);
 	//检测EV8事件
@@ -85,19 +94,28 @@ void SCD30_ReadMeasurement(u8 *data)
 	{
 		i++;
 		if(i>=100)
+		{
+			printf("error10\n");
 			break;
+		}
 	}
 	
+	i = 0;
+	delay_ms(1);
 	//发送数据,即读数据的内存地址LSB 0x00
 	I2C_SendData(I2C_Num, 0x00);
-	//检测EV8事件
-	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTING) == ERROR)
+	//检测EV8_2事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=10000)
+		{
+			printf("error11\n");
 			break;
+		}
 	}
 	
+	i = 0;
 	//生成Stop信号
 	I2C_GenerateSTOP(I2C_Num, ENABLE);
 	//写过程结束  准备开始读数据
@@ -112,24 +130,32 @@ void SCD30_ReadMeasurement(u8 *data)
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_MODE_SELECT) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=10000)
+		{
+			printf("error12\n");
 			break;
+		}
 	}
 	
+	i = 0;
 	//发送设备地址 读模式
 	I2C_Send7bitAddress(I2C_Num, TargetAddress, I2C_Direction_Receiver);
 	//检测EV6事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=10000)
+		{
+			printf("error13\n");
 			break;
+		}
 	}
 	
+	i = 0;
 	//开始读数据
-	for(j = 0; j < 9; j++)
+	for(j = 0; j < 18; j++)
 	{
-		if(j == 8)
+		if(j == 17)
 		{
 			//准备读最后一个字节 发送NACK
 			I2C_AcknowledgeConfig(I2C_Num, DISABLE);
@@ -138,10 +164,14 @@ void SCD30_ReadMeasurement(u8 *data)
 		while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_RECEIVED) == ERROR)
 		{
 			i++;
-			if(i>=100)
+			if(i>=10000)
+			{
+				printf("error14\n");
 				break;
+			}
 		}
-		//读一个字节数据
+		i = 0;
+		//读一个字节数据 
 		*data = I2C_ReceiveData(I2C_Num);
 		data++;
 	}
@@ -164,12 +194,14 @@ void SCD30_TriggerContinuousMeasurement(void)
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_MODE_SELECT) == ERROR)
 	{
 		i++;
-		if(i>=100)
+		if(i>=100000)
 		{
-			printf("error\n");
+			printf("error1\n");
 			break;
 		}
 	}
+	
+	i = 0;
 	I2C_Send7bitAddress(I2C_Num, TargetAddress, I2C_Direction_Transmitter);
 	//检测EV6事件
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) == ERROR)
@@ -177,11 +209,12 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100000)
 		{
-			printf("error\n");
+			printf("error2\n");
 			break;
 		}
 	}
 	
+	i = 0;
 	//以下发送16bit CMD
 	I2C_SendData(I2C_Num, 0x00);
 	//检测EV8事件
@@ -190,10 +223,11 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error\n");
+			printf("error3\n");
 			break;
 		}
 	}
+	i = 0;
 	delay_ms(1);
 	I2C_SendData(I2C_Num, 0x10);
 	//检测EV8事件
@@ -202,11 +236,12 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error\n");
+			printf("error4\n");
 			break;
 		}
 	}
 	
+	i = 0;
 	delay_ms(1);
 	//以下发送16bit Pressure
 	I2C_SendData(I2C_Num, 0x00);
@@ -216,11 +251,12 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error\n");
+			printf("error5\n");
 			break;
 		}
 	}
 	
+	i = 0;
 	delay_ms(1);
 	I2C_SendData(I2C_Num, 0x00);
 	//检测EV8事件
@@ -229,10 +265,12 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error\n");
+			printf("error6\n");
 			break;
 		}
 	}
+	
+	i = 0;
 	delay_ms(1);
 	//发送CRC
 	I2C_SendData(I2C_Num, 0x81);
@@ -240,13 +278,150 @@ void SCD30_TriggerContinuousMeasurement(void)
 	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR)
 	{
 		i++;	
-		if(i>=1000)
+		if(i>=100000)
 		{
-			printf("error\n");
+			printf("error7\n");
 			break;
 		}
 	}
 	
 	//数据传输完成 生成Stop信号
 	I2C_GenerateSTOP(I2C_Num, ENABLE);
+}
+
+
+u8 SCD30_CheckDataReady(void)
+{
+	u8 DataReadyMSB, DataReadyLSB;
+	u32 i=0;
+	//生成Start信号
+	I2C_GenerateSTART(I2C_Num, ENABLE);
+	//检测EV5事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_MODE_SELECT) == ERROR)
+	{
+		i++;
+		if(i>=100000)
+		{
+			printf("error8\n");
+			break;
+		}
+	}
+	
+	i=0;
+	delay_ms(1);
+	//发送设备地址 写模式
+	I2C_Send7bitAddress(I2C_Num, TargetAddress, I2C_Direction_Transmitter);
+	//检测EV6事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error9\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	//发送数据,即读数据的内存地址MSB 0x02
+	I2C_SendData(I2C_Num, 0x02);
+	//检测EV8事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTING) == ERROR)
+	{
+		i++;
+		if(i>=1000)
+		{
+			printf("error10\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	delay_ms(1);
+	//发送数据,即读数据的内存地址LSB 0x02
+	I2C_SendData(I2C_Num, 0x02);
+	//检测EV8_2事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error11\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	//生成Stop信号
+	I2C_GenerateSTOP(I2C_Num, ENABLE);
+	//写过程结束  准备开始读数据
+	
+	//延迟3ms以上
+	delay_ms(5);
+	
+	//读数据过程开始
+	//再次生成Start信号
+	I2C_GenerateSTART(I2C_Num, ENABLE);
+	//检测EV5事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_MODE_SELECT) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error12\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	//发送设备地址 读模式
+	I2C_Send7bitAddress(I2C_Num, TargetAddress, I2C_Direction_Receiver);
+	//检测EV6事件
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error13\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	//开始读数据
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_RECEIVED) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error14\n");
+			break;
+		}
+	}
+	
+	i = 0;
+	//读一个字节数据 
+	DataReadyMSB = I2C_ReceiveData(I2C_Num);
+	
+	//准备读最后一个字节 发送NACK
+	I2C_AcknowledgeConfig(I2C_Num, DISABLE);
+	
+	while(I2C_CheckEvent(I2C_Num, I2C_EVENT_MASTER_BYTE_RECEIVED) == ERROR)
+	{
+		i++;
+		if(i>=10000)
+		{
+			printf("error14\n");
+			break;
+		}
+	}
+	DataReadyLSB = I2C_ReceiveData(I2C_Num);
+	
+	//数据传输完成 生成Stop信号
+	I2C_GenerateSTOP(I2C_Num, ENABLE);
+
+	if(DataReadyMSB == 0x00 && DataReadyLSB == 0x01)
+		return 0x01;
+	else
+		return 0;
 }
