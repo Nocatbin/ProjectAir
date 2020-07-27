@@ -10,6 +10,7 @@
 int main(void)
 {
 	u8 data[18]={0};
+	u8 ready = 0;
 	float CO2, Temperature, Humidity;
 	
 	delay_init();	    	 //延时函数初始化	  
@@ -18,10 +19,11 @@ int main(void)
 	I2C_congfig();
 	I2C_StretchClockCmd(I2C2, ENABLE);
 	SCD30_TriggerContinuousMeasurement();
+	delay_ms(3);
 	while(1)
 	{
-		delay_ms(3);
-		while(SCD30_CheckDataReady())
+		ready = SCD30_CheckDataReady();
+		while(ready)
 		{
 			SCD30_ReadMeasurement(data);
 			CO2 = bytes_to_float(data[0], data[1], data[3], data[4]);
@@ -30,6 +32,8 @@ int main(void)
 			printf("Co2:%f", CO2);
 			printf("T:%f", Temperature);
 			printf("H:%f", Humidity);
+			break;
 		}
+		
 	}
 }
