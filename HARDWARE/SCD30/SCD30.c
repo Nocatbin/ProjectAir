@@ -67,7 +67,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=10000)
 		{
-			printf("error8\n");
+			printf("error2-1\n");
 			break;
 		}
 	}
@@ -81,7 +81,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=1000)
 		{
-			printf("error9\n");
+			printf("error2-2\n");
 			break;
 		}
 	}
@@ -95,7 +95,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=100)
 		{
-			printf("error10\n");
+			printf("error2-3\n");
 			break;
 		}
 	}
@@ -110,7 +110,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=10000)
 		{
-			printf("error11\n");
+			printf("error2-4\n");
 			break;
 		}
 	}
@@ -132,7 +132,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=10000)
 		{
-			printf("error12\n");
+			printf("error2-5\n");
 			break;
 		}
 	}
@@ -146,7 +146,7 @@ void SCD30_ReadMeasurement(u8 *data)
 		i++;
 		if(i>=10000)
 		{
-			printf("error13\n");
+			printf("error2-6\n");
 			break;
 		}
 	}
@@ -166,7 +166,7 @@ void SCD30_ReadMeasurement(u8 *data)
 			i++;
 			if(i>=10000)
 			{
-				printf("error14\n");
+				printf("error2-7\n");
 				break;
 			}
 		}
@@ -177,7 +177,7 @@ void SCD30_ReadMeasurement(u8 *data)
 	}
 	
 	//重新打开自动ACK
-	I2C_AcknowledgeConfig(I2C_Num, DISABLE);
+	I2C_AcknowledgeConfig(I2C_Num, ENABLE);
 	
 	//数据传输完成 生成Stop信号
 	I2C_GenerateSTOP(I2C_Num, ENABLE);
@@ -196,7 +196,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100000)
 		{
-			printf("error1\n");
+			printf("error1-1\n");
 			break;
 		}
 	}
@@ -209,7 +209,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100000)
 		{
-			printf("error2\n");
+			printf("error1-2\n");
 			break;
 		}
 	}
@@ -223,7 +223,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error3\n");
+			printf("error1-3\n");
 			break;
 		}
 	}
@@ -236,7 +236,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error4\n");
+			printf("error1-4\n");
 			break;
 		}
 	}
@@ -251,7 +251,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error5\n");
+			printf("error1-5\n");
 			break;
 		}
 	}
@@ -265,7 +265,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;
 		if(i>=100)
 		{
-			printf("error6\n");
+			printf("error1-6\n");
 			break;
 		}
 	}
@@ -280,7 +280,7 @@ void SCD30_TriggerContinuousMeasurement(void)
 		i++;	
 		if(i>=100000)
 		{
-			printf("error7\n");
+			printf("error1-7\n");
 			break;
 		}
 	}
@@ -417,11 +417,14 @@ u8 SCD30_CheckDataReady(void)
 	}
 	DataReadyLSB = I2C_ReceiveData(I2C_Num);
 	
+	//重新打开自动ACK
+	I2C_AcknowledgeConfig(I2C_Num, ENABLE);
+	
 	//数据传输完成 生成Stop信号
 	I2C_GenerateSTOP(I2C_Num, ENABLE);
 
 	if(DataReadyMSB == 0x00 && DataReadyLSB == 0x01)
 		return 0x01;
 	else
-		return 0;
+		return 0x00;
 }

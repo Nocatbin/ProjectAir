@@ -15,7 +15,7 @@ int main(void)
 	
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
-	uart_init(115200);	 //串口初始化为115200
+	uart_init(115200);	 //串口初始化为
 	I2C_congfig();
 	I2C_StretchClockCmd(I2C2, ENABLE);
 	SCD30_TriggerContinuousMeasurement();
@@ -23,17 +23,16 @@ int main(void)
 	while(1)
 	{
 		ready = SCD30_CheckDataReady();
-		while(ready)
+		if(ready)
 		{
-			SCD30_ReadMeasurement(data);
-			CO2 = bytes_to_float(data[0], data[1], data[3], data[4]);
-			Temperature = bytes_to_float(data[6], data[7], data[9], data[10]);
-			Humidity = bytes_to_float(data[12], data[13], data[15], data[16]);
-			printf("Co2:%f", CO2);
-			printf("T:%f", Temperature);
-			printf("H:%f", Humidity);
-			break;
+		SCD30_ReadMeasurement(data);
+		CO2 = bytes_to_float(data[0], data[1], data[3], data[4]);
+		Temperature = bytes_to_float(data[6], data[7], data[9], data[10]);
+		Humidity = bytes_to_float(data[12], data[13], data[15], data[16]);
+		printf("Co2:%f", CO2);
+		printf("T:%f", Temperature);
+		printf("H:%f\n", Humidity);
 		}
-		
 	}
 }
+
