@@ -24,7 +24,7 @@ int main(void)
 	SCD30_TriggerContinuousMeasurement();
 	delay_ms(3);
 	POINT_COLOR=BLUE;//设置字体为蓝色
-	LCD_ShowString(60,50,300,24,24, "Stability Test In Progress");
+	LCD_ShowString(60,50,310,24,24, "Stability Test In Progress");
 	while(1)
 	{
 		ready = SCD30_CheckDataReady();
