@@ -44,7 +44,7 @@ int main(void)
 		LCD_ShowString(60,200,200,24,24, "Humidity");
 		LCD_ShowNum(60,230,Humidity,2,24);
 		LCD_ShowString(60,260,200,24,24, "Count");
-		LCD_ShowNum(60,290,count,2,24);
+		LCD_ShowNum(60,290,count,8,24);
 		count++;
 		}
 	}
