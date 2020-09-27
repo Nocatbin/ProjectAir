@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\I2C;..\HARDWARE\SCD30;..\HARDWARE\LCD</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\I2C;..\HARDWARE\SCD30;..\HARDWARE\LCD;..\HARDWARE\Display_EPD_W21;..\HARDWARE\Display_EPD_W21_SPI</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -452,6 +452,16 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>Display_EPD_W21.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Display_EPD_W21\Display_EPD_W21.c</FilePath>
+            </File>
+            <File>
+              <FileName>Display_EPD_W21_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Display_EPD_W21_SPI\Display_EPD_W21_spi.c</FilePath>
             </File>
           </Files>
         </Group>
