@@ -5,9 +5,11 @@
 #define EPD_W21_WRITE_DATA 1
 #define EPD_W21_WRITE_CMD  0
 
+
+
 void driver_delay_us(unsigned int xus);
 void driver_delay_xms(unsigned long xms);
-
+void EPD_display_init(void);
 extern void EPD_W21_WriteCMD(unsigned char command);
 static void EPD_W21_Update(void);
 static void EPD_W21_EnableChargepump(void);
