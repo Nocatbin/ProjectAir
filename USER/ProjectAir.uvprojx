@@ -453,6 +453,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\Display_EPD_W21_SPI\Display_EPD_W21_spi.c</FilePath>
             </File>
+            <File>
+              <FileName>LookUpTable.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\Display_EPD_W21\LookUpTable.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

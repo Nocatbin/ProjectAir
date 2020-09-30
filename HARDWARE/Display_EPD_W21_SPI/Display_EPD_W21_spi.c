@@ -44,8 +44,8 @@ void EPD_W21_WriteCMD(unsigned char command)
 }
 void EPD_W21_WriteDATA(unsigned char command)
 {
-    SPI_Delay(1);
-    EPD_W21_CS_0;                   
+	SPI_Delay(1);
+	EPD_W21_CS_0;                   
 	EPD_W21_DC_1;		// command write
 	SPI_Write(command);
 	EPD_W21_CS_1;

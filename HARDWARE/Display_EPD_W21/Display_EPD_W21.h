@@ -4,12 +4,23 @@
 
 #define EPD_W21_WRITE_DATA 1
 #define EPD_W21_WRITE_CMD  0
-
-
+#include <stm32f10x.h>
 
 void driver_delay_us(unsigned int xus);
 void driver_delay_xms(unsigned long xms);
+void GPIO_Configuration(void);
+void lcd_chkstatus(void);
 void EPD_display_init(void);
+void full_display(void pic_display(void));
+void lut(void);
+void lut1(void);
+void full_display(void pic_display(void));
+void pic_display_white(void);
+void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_old(void),void partial_new(void)); //partial display
+void partial00(void);
+void partial01(void);
+void partial02(void);
+
 extern void EPD_W21_WriteCMD(unsigned char command);
 static void EPD_W21_Update(void);
 static void EPD_W21_EnableChargepump(void);
