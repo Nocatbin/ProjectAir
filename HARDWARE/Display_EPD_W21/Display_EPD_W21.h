@@ -20,6 +20,8 @@ void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_o
 void partial00(void);
 void partial01(void);
 void partial02(void);
+void partial_full00(void);
+void partial_full02(void);
 
 extern void EPD_W21_WriteCMD(unsigned char command);
 static void EPD_W21_Update(void);

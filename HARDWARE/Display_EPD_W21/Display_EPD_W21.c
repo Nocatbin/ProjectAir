@@ -94,8 +94,9 @@ void EPD_display_init(void)
 		EPD_W21_WriteCMD(0x04);  		//Power ON CMD
 		lcd_chkstatus();
 
+		// this section is essential, do not temper!
 		EPD_W21_WriteCMD(0x00);			//panel setting CMD
-		EPD_W21_WriteDATA(0x1f);		//400*300, LUT from OTP, BW mode(Black&White)
+		EPD_W21_WriteDATA(0x3f);		//400*300, LUT from OTP, BM mode
 		EPD_W21_WriteDATA(0x0d);		//VCOM to 0V fast		这一行不知道是干嘛的
 		
 		EPD_W21_WriteCMD(0x30);			//PLL setting
@@ -141,8 +142,6 @@ void lut(void)
 	
 void full_display(void pic_display(void))
 {
-
-		
 		pic_display(); //picture
 		lut(); //Power settings
 		EPD_W21_WriteCMD(0x12);			//DISPLAY REFRESH 	
@@ -153,19 +152,19 @@ void full_display(void pic_display(void))
 void pic_display_white(void)
 {
 	unsigned int i;
-		EPD_W21_WriteCMD(0x10);
-		for(i=0;i<15000;i++)	     
-		{
-				EPD_W21_WriteDATA(0x00);  
-		}  
-		driver_delay_xms(2);
+	EPD_W21_WriteCMD(0x10);
+	for(i=0;i<15000;i++)	     
+	{
+		EPD_W21_WriteDATA(0x00);  
+	}  
+	driver_delay_xms(2);
 
-		EPD_W21_WriteCMD(0x13);
-		for(i=0;i<15000;i++)	     
-		{
-				EPD_W21_WriteDATA(0xff);  
-		}  
-		driver_delay_xms(2);		 
+	EPD_W21_WriteCMD(0x13);
+	for(i=0;i<15000;i++)	     
+	{
+		EPD_W21_WriteDATA(0xff);  
+	}  
+	driver_delay_xms(2);		 
 }
 
 void lut1(void)
@@ -194,35 +193,33 @@ void lut1(void)
 
 void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_old(void),void partial_new(void)) //partial display
 {
-	  EPD_W21_WriteCMD(0x82);			//vcom_DC setting  	
-    EPD_W21_WriteDATA (0x08);	
-		EPD_W21_WriteCMD(0X50);
-		EPD_W21_WriteDATA(0x47);		
-		lut1();
-	  EPD_W21_WriteCMD(0x91);		//This command makes the display enter partial mode
-		EPD_W21_WriteCMD(0x90);		//resolution setting
-		EPD_W21_WriteDATA ((400-x_end)/256);
-		EPD_W21_WriteDATA ((400-x_end)%256);   //x-start    
-		
-		EPD_W21_WriteDATA ((400-x_start)/256);		
-		EPD_W21_WriteDATA ((400-x_start)%256-1);  //x-end
+	EPD_W21_WriteCMD(0x82);			//vcom_DC setting  	
+  EPD_W21_WriteDATA (0x08);	
+	EPD_W21_WriteCMD(0X50);
+	EPD_W21_WriteDATA(0x47);		
+	lut1();
+	EPD_W21_WriteCMD(0x91);		//This command makes the display enter partial mode
+	EPD_W21_WriteCMD(0x90);		//resolution setting AKA partial window
+	EPD_W21_WriteDATA ((400-x_end)/256);
+	EPD_W21_WriteDATA ((400-x_end)%256);   //x-start    
+	EPD_W21_WriteDATA ((400-x_start)/256);		
+	EPD_W21_WriteDATA ((400-x_start)%256-1);  //x-end
 
-		EPD_W21_WriteDATA (y_start/256);
-		EPD_W21_WriteDATA (y_start%256);   //y-start    
+	EPD_W21_WriteDATA (y_start/256);
+	EPD_W21_WriteDATA (y_start%256);   //y-start    
 		
-		EPD_W21_WriteDATA (y_end/256);		
-		EPD_W21_WriteDATA (y_end%256-1);  //y-end
-		EPD_W21_WriteDATA (0x28);	
+	EPD_W21_WriteDATA (y_end/256);		
+	EPD_W21_WriteDATA (y_end%256-1);  //y-end
+	EPD_W21_WriteDATA (0x28);	
 
-		EPD_W21_WriteCMD(0x10);	       //writes Old data to SRAM for programming
-		partial_old();
-		EPD_W21_WriteCMD(0x13);				 //writes New data to SRAM.
-		partial_new();
+	EPD_W21_WriteCMD(0x10);	       //writes Old data to SRAM for programming
+	partial_old();
+	EPD_W21_WriteCMD(0x13);				 //writes New data to SRAM.
+	partial_new();
     	
-		EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
-		driver_delay_xms(10);     //!!!The delay here is necessary, 200uS at least!!!     
-		lcd_chkstatus();
-	  
+	EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
+	driver_delay_xms(10);     //!!!The delay here is necessary, 200uS at least!!!     
+	lcd_chkstatus();
 }
 
 void partial00(void)
@@ -240,7 +237,7 @@ void partial01(void)
 
 		for(i=0;i<256;i++)	     
 			{
-			EPD_W21_WriteDATA (~gImage_num1[i]);
+			EPD_W21_WriteDATA (~gImage[i]);
 			driver_delay_xms(2);  
 			}	
 	}
@@ -253,6 +250,23 @@ void partial02(void)
 			driver_delay_xms(2);  
 			}	
 	}
+
+void partial_full00(void)
+{
+	unsigned int i;
+	for(i=0;i<15000;i++)	     
+	{
+			EPD_W21_WriteDATA(0x00);  
+	}  
+}
+void partial_full02(void)
+{
+	unsigned int i;
+	for(i=0;i<15000;i++)	     
+	{
+			EPD_W21_WriteDATA(~gImage_2[i]);  
+	}  
+}
 /***********************************************************
 						end file
 ***********************************************************/

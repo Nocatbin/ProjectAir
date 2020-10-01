@@ -20,13 +20,10 @@ int main(void)
 	uart_init(115200);	 //串口初始化
   EPD_display_init(); //EPD init
 	full_display(pic_display_white); //pic_white
-	driver_delay_xms(3000);
-	EPD_W21_WriteCMD(0X50);
-	EPD_W21_WriteDATA(0xf7);// enter WBRmode, init WBmode 不知道为啥要这么切换
-	driver_delay_xms(1000);
-	partial_display(0,32,0,64, partial00, partial01); //partial display 0 1                             
+  driver_delay_xms(1000);	
+	partial_display(0,32,0,64, partial00, partial01); //partial display 0 1         
+	/*	
 	partial_display(0,32,0,64, partial01, partial02); //partial display 1 2                   //////////////（x,y）   ----x----
-	/*
 	partial_display(0,32,0,64, partial02, partial03); //partial display 2 3                        /     /      /                   y|
 	partial_display(0,32,0,64, partial03, partial04); //partial display 3 4                       /W    /      /                     |                  
 	partial_display(0,32,0,64, partial04, partial05); //partial display 4 5                      ///// L //////                      |

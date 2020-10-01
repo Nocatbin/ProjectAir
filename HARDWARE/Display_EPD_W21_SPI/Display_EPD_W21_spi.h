@@ -26,7 +26,6 @@
 #define EPD_W21_BS_0	GPIO_ResetBits(GPIOE, GPIO_Pin_11)
 //#define EPD_W21_BS_1	P2 |= 0x01
 
-//#define isEPD_W21_BUSY GPIO_ReadOutputDataBit(GPIOE, GPIO_Pin_13) // for solomen solutions
 #define isEPD_W21_BUSY GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_13) // for solomen solutions
 
 extern void driver_delay_us(unsigned int xus);
