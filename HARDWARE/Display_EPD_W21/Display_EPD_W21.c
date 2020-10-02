@@ -237,10 +237,11 @@ void partial01(void)
 
 		for(i=0;i<256;i++)	     
 			{
-			EPD_W21_WriteDATA (~gImage[i]);
+			EPD_W21_WriteDATA (~Number_4[i]);
 			driver_delay_xms(2);  
 			}	
-	}
+}
+/*
 void partial02(void)
 {
   unsigned int i;
@@ -250,7 +251,7 @@ void partial02(void)
 			driver_delay_xms(2);  
 			}	
 	}
-
+*/
 void partial_full00(void)
 {
 	unsigned int i;
@@ -259,14 +260,7 @@ void partial_full00(void)
 			EPD_W21_WriteDATA(0x00);  
 	}  
 }
-void partial_full02(void)
-{
-	unsigned int i;
-	for(i=0;i<15000;i++)	     
-	{
-			EPD_W21_WriteDATA(~gImage_2[i]);  
-	}  
-}
+
 /***********************************************************
 						end file
 ***********************************************************/
