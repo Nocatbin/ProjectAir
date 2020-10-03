@@ -1,7 +1,7 @@
 
 #ifndef _MCU_SPI_H_
 #define _MCU_SPI_H_
- #include "stm32f10x.h"
+#include "stm32f10x.h"
 
 #define EPD_W21_SPI_SPEED 0x02
 

@@ -18,11 +18,11 @@ int main(void)
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
 	uart_init(115200);	 //串口初始化
+	RTC_Init();	  			//RTC初始化
   EPD_display_init(); //EPD init
 	full_display(pic_display_white); //pic_white
   driver_delay_xms(1000);	
 	partial_display(0,32,0,64, partial00, partial01);
-	//partial_display(0,32,0,64, partial00, partial01);
 	driver_delay_xms(1000);
 	I2C_congfig();
 	I2C_StretchClockCmd(I2C2, ENABLE);

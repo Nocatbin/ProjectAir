@@ -1,14 +1,15 @@
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"
-#include "rtc.h" 		    
+#include "rtc.h"
+#include "Display_EPD_W21.h"
 // 精英 STM32开发板
 //RTC实时时钟 驱动代码			 
 //正点原子@ALIENTEK
 //2010/6/6
-	   
-_calendar_obj calendar;//时钟结构体 
- 
+
+struct Calendar oldTime;
+
 static void RTC_NVIC_Config(void)
 {	
   NVIC_InitTypeDef NVIC_InitStructure;
@@ -32,59 +33,62 @@ u8 RTC_Init(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);	//使能PWR和BKP外设时钟   
 	PWR_BackupAccessCmd(ENABLE);	//使能后备寄存器访问  
 	if (BKP_ReadBackupRegister(BKP_DR1) != 0x5050)		//从指定的后备寄存器中读出数据:读出了与写入的指定数据不相乎
-		{	 			 
+	{	 			 
 		BKP_DeInit();	//复位备份区域 	
 		RCC_LSEConfig(RCC_LSE_ON);	//设置外部低速晶振(LSE),使用外设低速晶振
 		while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET&&temp<250)	//检查指定的RCC标志位设置与否,等待低速晶振就绪
-			{
+		{
 			temp++;
 			delay_ms(10);
-			}
+		}
 		if(temp>=250)return 1;//初始化时钟失败,晶振有问题	    
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);		//设置RTC时钟(RTCCLK),选择LSE作为RTC时钟    
 		RCC_RTCCLKCmd(ENABLE);	//使能RTC时钟  
 		RTC_WaitForLastTask();	//等待最近一次对RTC寄存器的写操作完成
 		RTC_WaitForSynchro();		//等待RTC寄存器同步  
-		RTC_ITConfig(RTC_IT_SEC, ENABLE);		//使能RTC秒中断
+		RTC_ITConfig(RTC_IT_OW, ENABLE);		//使能RTC秒中断
 		RTC_WaitForLastTask();	//等待最近一次对RTC寄存器的写操作完成
 		RTC_EnterConfigMode();/// 允许配置	
 		RTC_SetPrescaler(32767); //设置RTC预分频的值
 		RTC_WaitForLastTask();	//等待最近一次对RTC寄存器的写操作完成
-		RTC_Set(2015,1,14,17,42,55);  //设置时间	
+		RTC_Set(2020,10,3,21,42,55);  //设置时间	
 		RTC_ExitConfigMode(); //退出配置模式  
 		BKP_WriteBackupRegister(BKP_DR1, 0X5050);	//向指定的后备寄存器中写入用户程序数据
-		}
+	}
 	else//系统继续计时
-		{
+	{
 
 		RTC_WaitForSynchro();	//等待最近一次对RTC寄存器的写操作完成
 		RTC_ITConfig(RTC_IT_SEC, ENABLE);	//使能RTC秒中断
 		RTC_WaitForLastTask();	//等待最近一次对RTC寄存器的写操作完成
-		}
+	}
 	RTC_NVIC_Config();//RCT中断分组设置		    				     
 	RTC_Get();//更新时间	
 	return 0; //ok
 
-}		 				    
+}
+
 //RTC时钟中断
 //每秒触发一次  
-//extern u16 tcnt; 
 void RTC_IRQHandler(void)
-{		 
-	if (RTC_GetITStatus(RTC_IT_SEC) != RESET)//秒钟中断
-	{							
-		RTC_Get();//更新时间   
- 	}
-	if(RTC_GetITStatus(RTC_IT_ALR)!= RESET)//闹钟中断
+{
+	struct Calendar newTime;
+	if(RTC_GetITStatus(RTC_IT_SEC) != RESET)//秒钟中断
 	{
-		RTC_ClearITPendingBit(RTC_IT_ALR);		//清闹钟中断	  	
-	  RTC_Get();				//更新时间   
-  	printf("Alarm Time:%d-%d-%d %d:%d:%d\n",calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);//输出闹铃时间	
+		newTime = RTC_Get();//更新时间
 		
-  	} 				  								 
-	RTC_ClearITPendingBit(RTC_IT_SEC|RTC_IT_OW);		//清闹钟中断
-	RTC_WaitForLastTask();	  	    						 	   	 
+		if(newTime.hour != oldTime.hour)	//判断是否需要刷新小时
+		{
+			//partial_display(0,32,0,64, partial00, partial01);
+		}
+		if(newTime.min != oldTime.min)		//判断是否需要刷新分钟
+		{
+			//partial_display(0,32,0,64, partial00, partial01);
+		}
+ 	}
+	RTC_WaitForLastTask();
 }
+
 //判断是否是闰年函数
 //月份   1  2  3  4  5  6  7  8  9  10 11 12
 //闰年   31 29 31 30 31 30 31 31 30 31 30 31
@@ -180,8 +184,9 @@ u8 RTC_Alarm_Set(u16 syear,u8 smon,u8 sday,u8 hour,u8 min,u8 sec)
 
 //得到当前的时间
 //返回值:0,成功;其他:错误代码.
-u8 RTC_Get(void)
+struct Calendar RTC_Get(void)
 {
+	struct Calendar calendar;
 	static u16 daycnt=0;
 	u32 timecount=0; 
 	u32 temp=0;
@@ -226,7 +231,7 @@ u8 RTC_Get(void)
 	calendar.min=(temp%3600)/60; 	//分钟	
 	calendar.sec=(temp%3600)%60; 	//秒钟
 	calendar.week=RTC_Get_Week(calendar.w_year,calendar.w_month,calendar.w_date);//获取星期   
-	return 0;
+	return calendar;
 }	 
 //获得现在是星期几
 //功能描述:输入公历日期得到星期(只允许1901-2099年)
