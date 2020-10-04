@@ -68,7 +68,7 @@ void lcd_chkstatus(void)
 		busy =!(busy & 0x01);        
 	}
 	while(busy);   
-	driver_delay_xms(200);                       
+	driver_delay_xms(1);                       
 }
 
 void EPD_display_init(void)
@@ -191,8 +191,11 @@ void lut1(void)
 		{EPD_W21_WriteDATA(lut_bb1[count]);}   
 }
 
-void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_old(void),void partial_new(void)) //partial display
+void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,unsigned char oldNumber[],unsigned char newNumber[]) //partial display
 {
+	unsigned int i;
+	unsigned int j;
+	j = (x_end - x_start) * (y_end - y_start) / 8;
 	EPD_W21_WriteCMD(0x82);			//vcom_DC setting  	
   EPD_W21_WriteDATA (0x08);	
 	EPD_W21_WriteCMD(0X50);
@@ -213,19 +216,27 @@ void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_o
 	EPD_W21_WriteDATA (0x28);	
 
 	EPD_W21_WriteCMD(0x10);	       //writes Old data to SRAM for programming
-	partial_old();
+	
+	for(i=0;i<j;i++)	     
+	{
+		EPD_W21_WriteDATA(oldNumber[i]);
+	}
+	
 	EPD_W21_WriteCMD(0x13);				 //writes New data to SRAM.
-	partial_new();
+	for(i=0;i<j;i++)	     
+	{
+		EPD_W21_WriteDATA(newNumber[i]);  
+	}
     	
 	EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
-	driver_delay_xms(10);     //!!!The delay here is necessary, 200uS at least!!!     
+	driver_delay_xms(1);     //!!!The delay here is necessary, 200uS at least!!!     
 	lcd_chkstatus();
 }
 
 void partial00(void)
 {
 	unsigned int i;
-	for(i=0;i<256;i++)	     
+	for(i=0;i<1936;i++)	     
 	{
 			EPD_W21_WriteDATA(0x00);  
 	}  
@@ -235,9 +246,9 @@ void partial01(void)
 {
 	unsigned int i;
 
-		for(i=0;i<256;i++)	     
+		for(i=0;i<1936;i++)	     
 			{
-			EPD_W21_WriteDATA (~Number_4[i]);
+			EPD_W21_WriteDATA (~LargeNumber_0[i]);
 			driver_delay_xms(2);  
 			}	
 }

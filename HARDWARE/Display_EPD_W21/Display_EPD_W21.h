@@ -1,4 +1,3 @@
-
 #ifndef _DISPLAY_EPD_W21_H_
 #define _DISPLAY_EPD_W21_H_
 
@@ -16,7 +15,7 @@ void lut(void);
 void lut1(void);
 void full_display(void pic_display(void));
 void pic_display_white(void);
-void partial_display(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,void partial_old(void),void partial_new(void)); //partial display
+void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,unsigned char oldNumber[],unsigned char newNumber[]); 
 void partial00(void);
 void partial01(void);
 void partial02(void);

@@ -79,7 +79,7 @@ void RTC_IRQHandler(void)
 		
 		if(newTime.hour != oldTime.hour)	//判断是否需要刷新小时
 		{
-			//partial_display(0,32,0,64, partial00, partial01);
+			//PartialRefresh(0,32,0,64, LargeBlank, LargeNumber_9) //partial display
 		}
 		if(newTime.min != oldTime.min)		//判断是否需要刷新分钟
 		{
