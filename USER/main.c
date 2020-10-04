@@ -21,6 +21,13 @@ int main(void)
   EPD_display_init(); //EPD init
 	full_display(pic_display_white); //pic_white
 	driver_delay_xms(1);
+	/*
+	PartialRefresh(264,352,0,176, 99, 0);
+	PartialRefresh(176,264,0,176, 99, 7);
+	PartialRefresh(0,88,0,176, 99, 9);
+	driver_delay_xms(100);
+	PartialRefresh(88,176,0,176, 99, 8);
+	*/
 	I2C_congfig();
 	I2C_StretchClockCmd(I2C2, ENABLE);
 	SCD30_TriggerContinuousMeasurement();

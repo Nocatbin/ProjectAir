@@ -1,5 +1,3 @@
-
-/***********************************************************/
 #include "Display_EPD_W21_spi.h"
 #include "Display_EPD_W21.h"
 #include "LookUpTable.h"
@@ -191,10 +189,9 @@ void lut1(void)
 		{EPD_W21_WriteDATA(lut_bb1[count]);}   
 }
 
-void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,unsigned char oldNumber[],unsigned char newNumber[]) //partial display
+void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,u8 oldNumber,u8 newNumber) //partial display
 {
-	unsigned int i;
-	unsigned int j;
+	u32 j;
 	j = (x_end - x_start) * (y_end - y_start) / 8;
 	EPD_W21_WriteCMD(0x82);			//vcom_DC setting  	
   EPD_W21_WriteDATA (0x08);	
@@ -213,24 +210,90 @@ void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,unsigned char o
 		
 	EPD_W21_WriteDATA (y_end/256);		
 	EPD_W21_WriteDATA (y_end%256-1);  //y-end
-	EPD_W21_WriteDATA (0x28);	
+	EPD_W21_WriteDATA (0x00);	
 
 	EPD_W21_WriteCMD(0x10);	       //writes Old data to SRAM for programming
-	
-	for(i=0;i<j;i++)	     
-	{
-		EPD_W21_WriteDATA(oldNumber[i]);
-	}
-	
+	sendPartialPic(oldNumber, j);
 	EPD_W21_WriteCMD(0x13);				 //writes New data to SRAM.
-	for(i=0;i<j;i++)	     
-	{
-		EPD_W21_WriteDATA(newNumber[i]);  
-	}
+	sendPartialPic(newNumber, j);
     	
 	EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
-	driver_delay_xms(1);     //!!!The delay here is necessary, 200uS at least!!!     
+	driver_delay_xms(100);     //!!!The delay here is necessary, 200uS at least!!!     
 	lcd_chkstatus();
+}
+
+void sendPartialPic(u8 number, u32 picLen)
+{
+	unsigned int i;
+	switch(number)
+	{
+		case 0 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_0[i]);
+			}
+			break;
+		case 1 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_1[i]);
+			}
+			break;
+		case 2 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_2[i]);
+			}
+			break;
+		case 3 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_3[i]);
+			}
+			break;
+		case 4 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_4[i]);
+			}
+			break;
+		case 5 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_5[i]);
+			}
+			break;
+		case 6 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_6[i]);
+			}
+			break;
+		case 7 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_7[i]);
+			}
+			break;
+		case 8 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_8[i]);
+			}
+			break;
+		case 9 : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(~LargeNumber_9[i]);
+			}
+			break;
+		default : 
+			for(i=0;i<picLen;i++)	     
+			{
+				EPD_W21_WriteDATA(LargeBlank[i]);
+			}
+			break;
+	}
 }
 
 void partial00(void)
