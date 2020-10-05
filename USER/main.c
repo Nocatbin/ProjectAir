@@ -23,12 +23,14 @@ int main(void)
 	driver_delay_xms(1);
 	
 	PartialRefresh(176,264,0,176, 99, 7);
+	driver_delay_xms(100);
 	PartialRefresh(0,88,0,176, 99, 9);
-	//driver_delay_xms(100);
+	driver_delay_xms(100);
 	PartialRefresh(88,176,0,176, 99, 8);
+	driver_delay_xms(100);
 	PartialRefresh(264,352,0,176, 99, 1);
-	PartialRefresh(264,352,0,176, 1, 2);
-	PartialRefresh(264,352,0,176, 2, 3);
+	//PartialRefresh(264,352,0,176, 1, 2);
+	//PartialRefresh(264,352,0,176, 2, 3);
 	//PartialRefresh(264,352,0,176, 3, 4);
 	//PartialRefresh(264,352,0,176, 4, 5);
 	
