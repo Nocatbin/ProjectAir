@@ -2,7 +2,8 @@
 #include "delay.h"
 #include "usart.h"
 #include "rtc.h"
-#include "Display_EPD_W21.h"
+#include "SCD30.h"
+#include "oled.h"
 // 精英 STM32开发板
 //RTC实时时钟 驱动代码			 
 //正点原子@ALIENTEK
@@ -32,7 +33,7 @@ u8 RTC_Init(void)
 	u8 temp=0;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);	//使能PWR和BKP外设时钟   
 	PWR_BackupAccessCmd(ENABLE);	//使能后备寄存器访问  
-	if (BKP_ReadBackupRegister(BKP_DR1) != 0x5050)		//从指定的后备寄存器中读出数据:读出了与写入的指定数据不相乎
+	if (BKP_ReadBackupRegister(BKP_DR1) != 0x5051)		//从指定的后备寄存器中读出数据:读出了与写入的指定数据不相乎
 	{	 			 
 		BKP_DeInit();	//复位备份区域 	
 		RCC_LSEConfig(RCC_LSE_ON);	//设置外部低速晶振(LSE),使用外设低速晶振
@@ -51,9 +52,9 @@ u8 RTC_Init(void)
 		RTC_EnterConfigMode();/// 允许配置	
 		RTC_SetPrescaler(32767); //设置RTC预分频的值
 		RTC_WaitForLastTask();	//等待最近一次对RTC寄存器的写操作完成
-		RTC_Set(2020,10,3,21,42,55);  //设置时间	
+		RTC_Set(2020,10,6,1,50,1);  //设置时间	
 		RTC_ExitConfigMode(); //退出配置模式  
-		BKP_WriteBackupRegister(BKP_DR1, 0X5050);	//向指定的后备寄存器中写入用户程序数据
+		BKP_WriteBackupRegister(BKP_DR1, 0X5051);	//向指定的后备寄存器中写入用户程序数据
 	}
 	else//系统继续计时
 	{
@@ -72,23 +73,39 @@ u8 RTC_Init(void)
 //每秒触发一次  
 void RTC_IRQHandler(void)
 {
+	u8 data[18]={0};
+	u8 ready = 0;
 	struct Calendar newTime;
+	float CO2, Temperature, Humidity;
 	if(RTC_GetITStatus(RTC_IT_SEC) != RESET)//秒钟中断
 	{
 		newTime = RTC_Get();//更新时间
-		
-		if(newTime.hour != oldTime.hour)	//判断是否需要刷新小时
+		OLED_ShowNum(10,0,newTime.hour,3,16);
+		OLED_ShowChar(40,0,':',16);
+		OLED_ShowNum(45,0,newTime.min,3,16);
+		OLED_ShowChar(75,0,':',16);
+		OLED_ShowNum(80,0,newTime.sec,3,16);
+		ready = SCD30_CheckDataReady();
+		if(ready)
 		{
-			//PartialRefresh(0,32,0,64, LargeBlank, LargeNumber_9) //partial display
+			SCD30_ReadMeasurement(data);
+			CO2 = bytes_to_float(data[0], data[1], data[3], data[4]);
+			Temperature = bytes_to_float(data[6], data[7], data[9], data[10]);
+			Humidity = bytes_to_float(data[12], data[13], data[15], data[16]);
+			printf("Co2:%f", CO2);
+			printf("T:%f", Temperature);
+			printf("H:%f\n", Humidity);
+			OLED_ShowString(30,3,"CO2:",16);
+			OLED_ShowNum(65,3,CO2,4,16);
+			OLED_ShowString(0,6,"T:",16);
+			OLED_ShowNum(20,6,Temperature,3,16);
+			OLED_ShowString(75,6,"H:",16);
+			OLED_ShowNum(95,6,Humidity,2,16);
 		}
-		if(newTime.min != oldTime.min)		//判断是否需要刷新分钟
-		{
-			//partial_display(0,32,0,64, partial00, partial01);
-		}
- 	}
+	}
+	RTC_ClearITPendingBit(RTC_IT_SEC|RTC_IT_OW);
 	RTC_WaitForLastTask();
 }
-
 //判断是否是闰年函数
 //月份   1  2  3  4  5  6  7  8  9  10 11 12
 //闰年   31 29 31 30 31 30 31 31 30 31 30 31
