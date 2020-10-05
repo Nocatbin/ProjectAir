@@ -6,8 +6,9 @@ unsigned char HRES_byte1,HRES_byte2,VRES_byte1,VRES_byte2;
 
 void EPD_W21_Init(void)
 {
-	EPD_W21_BS_0;		// 4 wire spi mode selected 其实还是三线
-
+	//EPD_W21_BS_0;		// 4 wire spi mode selected 其实还是三线
+	EPD_W21_RST_1;		// Module reset
+	driver_delay_xms(1000);
 	EPD_W21_RST_0;		// Module reset
 	driver_delay_xms(1000);
 	EPD_W21_RST_1;
@@ -94,11 +95,11 @@ void EPD_display_init(void)
 
 		// this section is essential, do not temper!
 		EPD_W21_WriteCMD(0x00);			//panel setting CMD
-		EPD_W21_WriteDATA(0x3f);		//400*300, LUT from OTP, BM mode
+		EPD_W21_WriteDATA(0x3f);		//400*300, LUT from OTP, BM mode 
 		EPD_W21_WriteDATA(0x0d);		//VCOM to 0V fast		这一行不知道是干嘛的
 		
 		EPD_W21_WriteCMD(0x30);			//PLL setting
-    EPD_W21_WriteDATA (0x3a);   // 3a 100HZ   29 150Hz 39 200HZ	31 171HZ
+    EPD_W21_WriteDATA (0x3c);   // 3a 100HZ   29 150Hz 39 200HZ	31 171HZ 3A 这个改成3c会变慢
 
 		EPD_W21_WriteCMD(0x61);			//resolution setting CMD
 		EPD_W21_WriteDATA (HRES_byte1);		
@@ -107,7 +108,7 @@ void EPD_display_init(void)
 		EPD_W21_WriteDATA (VRES_byte2);
 		
 		EPD_W21_WriteCMD(0x82);			//vcom_DC setting CMD
-    EPD_W21_WriteDATA (0x08);	
+    EPD_W21_WriteDATA (0x28);		//0x08
 
 		EPD_W21_WriteCMD(0X50);			//VCOM AND DATA INTERVAL SETTING CMD
 		EPD_W21_WriteDATA(0x97);		//WBmode:VBDF 17|D7 VBDW 97 VBDB 57		WBRmode:VBDF F7 VBDW 77 VBDB 37  VBDR B7
@@ -196,7 +197,7 @@ void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,u8 oldNumber,u8
 	EPD_W21_WriteCMD(0x82);			//vcom_DC setting  	
   EPD_W21_WriteDATA (0x08);	
 	EPD_W21_WriteCMD(0X50);
-	EPD_W21_WriteDATA(0x47);		
+	EPD_W21_WriteDATA(0x47);
 	lut1();
 	EPD_W21_WriteCMD(0x91);		//This command makes the display enter partial mode
 	EPD_W21_WriteCMD(0x90);		//resolution setting AKA partial window
@@ -219,6 +220,8 @@ void PartialRefresh(u16 x_start,u16 x_end,u16 y_start,u16 y_end ,u8 oldNumber,u8
     	
 	EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
 	driver_delay_xms(100);     //!!!The delay here is necessary, 200uS at least!!!     
+	//EPD_W21_WriteCMD(0x12);		 //DISPLAY REFRESH 		             
+	//driver_delay_xms(100);     //!!!The delay here is necessary, 200uS at least!!!  
 	lcd_chkstatus();
 }
 
