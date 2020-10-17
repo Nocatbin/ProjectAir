@@ -224,7 +224,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=HP Color LaserJet MFP M281fdn (4ED610)
+TargetPrinter=Hewlett-Packard HP LaserJet M1005
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
@@ -929,7 +929,7 @@ Type28=1
 Type29=1
 Type30=1
 Type31=1
-Type32=2
+Type32=3
 Type33=2
 Type34=2
 Type35=1
@@ -954,9 +954,9 @@ Type53=1
 Type54=1
 Type55=1
 Type56=2
-Type57=1
-Type58=1
-Type59=2
+Type57=3
+Type58=3
+Type59=3
 Type60=1
 Type61=2
 Type62=2
