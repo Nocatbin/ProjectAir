@@ -28,7 +28,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=Project Outputs for ProjectAir_Pcb
+OutputPath=
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -105,110 +105,6 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IHNWWYJI
 
-[GeneratedDocument1]
-DocumentPath=Project Outputs for ProjectAir_Pcb\Design Rule Check - ProjectAir_Pcb.html
-DItemRevisionGUID=
-
-[GeneratedDocument2]
-DocumentPath=Project Outputs for ProjectAir_Pcb\Fabrication Testpoint Report for ProjectAir_Pcb.ipc
-DItemRevisionGUID=
-
-[GeneratedDocument3]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb-RoundHoles.TXT
-DItemRevisionGUID=
-
-[GeneratedDocument4]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb-SlotHoles.TXT
-DItemRevisionGUID=
-
-[GeneratedDocument5]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.DRR
-DItemRevisionGUID=
-
-[GeneratedDocument6]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.EXTREP
-DItemRevisionGUID=
-
-[GeneratedDocument7]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GBL
-DItemRevisionGUID=
-
-[GeneratedDocument8]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GBO
-DItemRevisionGUID=
-
-[GeneratedDocument9]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GBP
-DItemRevisionGUID=
-
-[GeneratedDocument10]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GBS
-DItemRevisionGUID=
-
-[GeneratedDocument11]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GD1
-DItemRevisionGUID=
-
-[GeneratedDocument12]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GG1
-DItemRevisionGUID=
-
-[GeneratedDocument13]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GKO
-DItemRevisionGUID=
-
-[GeneratedDocument14]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GM1
-DItemRevisionGUID=
-
-[GeneratedDocument15]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GM15
-DItemRevisionGUID=
-
-[GeneratedDocument16]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GP1
-DItemRevisionGUID=
-
-[GeneratedDocument17]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GP2
-DItemRevisionGUID=
-
-[GeneratedDocument18]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GPB
-DItemRevisionGUID=
-
-[GeneratedDocument19]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GPT
-DItemRevisionGUID=
-
-[GeneratedDocument20]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GTL
-DItemRevisionGUID=
-
-[GeneratedDocument21]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument22]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GTP
-DItemRevisionGUID=
-
-[GeneratedDocument23]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument24]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.LDP
-DItemRevisionGUID=
-
-[GeneratedDocument25]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.REP
-DItemRevisionGUID=
-
-[GeneratedDocument26]
-DocumentPath=Project Outputs for ProjectAir_Pcb\ProjectAir_Pcb.RUL
-DItemRevisionGUID=
-
 [Configuration1]
 Name=Sources
 ParameterCount=0
@@ -256,7 +152,7 @@ SCH_HasExpandLogicalToPhysicalSheets=-1
 SaveSettingsToOutJob=0
 
 [Generic_EDE]
-OutputDir=Project Outputs for ProjectAir_Pcb
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs
