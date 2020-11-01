@@ -1,0 +1,10 @@
+Output: Test Point Report
+Type  : Test Points
+From  : Project [ProjectAir_Pcb.PrjPcb]
+   Generated File[Fabrication Testpoint Report for ProjectAir_Pcb.ipc]
+
+
+Files Generated   : 1
+Documents Printed : 0
+
+Finished Output Generation At 23:26:29 On 2020/11/1
